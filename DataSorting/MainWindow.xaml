@@ -11,7 +11,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Menu>
@@ -19,7 +19,7 @@
                 <MenuItem Header="همگام سازی داده" Name="btnAddData" Click="btnAddData_Click"/>
                 <MenuItem Header="بروزرسانی دیتابیس" Name="btnSyncFiles" Click="btnSyncFiles_Click"/>
                 <Separator/>
-                <MenuItem Header="درباره ؟ "/>
+                <MenuItem Header="درباره ؟ " ToolTip="سعید دارندی - تابستان 1401 - @thaeed on socials"/>
             </MenuItem>
         </Menu>
 
@@ -81,7 +81,10 @@
 
                     </DataGrid>
 
-                    <DataGrid Name="databaseDG" Grid.Row="1" CanUserAddRows="False" IsReadOnly="True"  AutoGenerateColumns="False"  >
+                    <DataGrid Name="databaseDG" Grid.Row="1" 
+                              CanUserAddRows="False" IsReadOnly="True"  
+                              AutoGenerateColumns="False"
+                              SelectionChanged="databaseDG_SelectionChanged">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="نام" Width="*" Binding="{Binding Firstname}"/>
                             <DataGridTextColumn Header="نام خانوادگی" Width="*" Binding="{Binding Lastname}"/>
@@ -101,5 +104,8 @@
 
         </Grid>
         <GridSplitter ResizeDirection="Rows" Grid.Row="1" Height="10" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0"/>
+        <Grid Grid.Row="2" Background="LightGray" Name="imageGrid" Margin="5">
+            
+        </Grid>
     </Grid>
 </Window>

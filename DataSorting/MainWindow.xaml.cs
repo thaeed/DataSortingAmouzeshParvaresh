@@ -18,6 +18,8 @@ using System.Windows.Shapes;
 
 namespace DataSorting
 {
+    //By Saeed Darandi© @thaeed on Socials..
+    //Simple app for managing scaning proccess and stuff.. Summer 2022
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -35,8 +37,7 @@ namespace DataSorting
         {
             searchDG.KeyDown += SearchDG_KeyDown;
             this.KeyDown += SearchDG_KeyDown;
-            // this is for demo purposes only, to make it easier
-            // to get up and running
+         
             _dbContext.Database.EnsureCreated();
 
             var dump = new List<PersonalInfoModel>();
@@ -67,63 +68,6 @@ namespace DataSorting
             }
         }
 
-
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            List<PersonalInfoModel> list = new();
-            var reader = new StreamReader(@"D:\test.csv");
-
-            while (!reader.EndOfStream)
-            {
-                var line = reader.ReadLine();
-                var values = line.Split(',');
-
-                if (values[0] == "firstname")
-                    continue;
-
-                var personal = new PersonalInfoModel()
-                {
-                    Firstname = values[0],
-                    Lastname = values[1],
-                    Fathername = values[2],
-                    MeliCode = values[3],
-                    PersonalCode = values[4],
-                    Created = DateTime.Now
-                };
-
-                list.Add(personal);
-            }
-
-
-            foreach (PersonalInfoModel? value in list)
-            {
-
-                _dbContext.Add(value);
-                _dbContext.SaveChanges();
-            }
-
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            //for (int i = 12000000; i <= 12000600; i++)
-            //{
-            //    Directory.CreateDirectory(@"E:\TESTAP\" + i.ToString());
-            //}
-
-            var files = Directory.GetDirectories(@"E:\TESTAP");
-
-            MessageBox.Show(System.IO.Path.GetFileName(files[0]));
-            foreach (var file in files)
-            {
-                var result = _dbContext.Employees.Where(e => e.PersonalCode.ToString() == System.IO.Path.GetFileName(file)).FirstOrDefault();
-                if (result != null)
-                    MessageBox.Show(result.Firstname + result.Lastname);
-            }
-
-
-        }
 
 
 
@@ -189,6 +133,100 @@ namespace DataSorting
             addDataWindow.ShowDialog();
 
             Window_Loaded(null, null);
+        }
+
+        private void databaseDG_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            imageGrid.Children.Clear();
+
+            /*
+             * Image container has 2 column and 3 rows.. (6 pictures)
+             */
+
+            ScrollViewer sc = new ScrollViewer();
+
+            var containerGrid = new Grid();
+
+            ColumnDefinition cd0 = new ColumnDefinition();
+            cd0.Width = new GridLength(100, GridUnitType.Star);
+            containerGrid.ColumnDefinitions.Add(cd0);
+            ColumnDefinition cd1 = new ColumnDefinition();
+            cd1.Width = new GridLength(100, GridUnitType.Star);
+            containerGrid.ColumnDefinitions.Add(cd1);
+
+
+            RowDefinition row0 = new RowDefinition();
+            row0.Height = new GridLength(400, GridUnitType.Pixel);
+            containerGrid.RowDefinitions.Add(row0);
+            RowDefinition row1 = new RowDefinition();
+            row1.Height = new GridLength(400, GridUnitType.Pixel);
+            containerGrid.RowDefinitions.Add(row1);
+            RowDefinition row2 = new RowDefinition();
+            row2.Height = new GridLength(400, GridUnitType.Pixel);
+            containerGrid.RowDefinitions.Add(row2);
+
+
+            int containerCounter = 1;
+
+            imageGrid.Children.Add(sc);
+            if (((PersonalInfoModel)databaseDG.SelectedItem) == null)
+                return;
+
+            var info = (PersonalInfoModel)databaseDG.SelectedItem as PersonalInfoModel;
+
+            if (info != null)
+            {
+                var files = Directory.GetFiles(info.DirPath);
+
+                if (files.Length > 0)
+                {
+
+                    foreach (var file in files)
+                    {
+
+                        var image = new Image();
+                        
+                        image.Stretch = Stretch.Uniform;
+                        image.Source = new BitmapImage(new Uri(file));
+
+                        switch (containerCounter)
+                        {
+                            case 1:
+                                image.SetValue(Grid.ColumnProperty, 0);
+                                image.SetValue(Grid.RowProperty, 0);
+
+                                break;
+                            case 2:
+                                image.SetValue(Grid.ColumnProperty, 1);
+                                image.SetValue(Grid.RowProperty, 0);
+                                break;
+                            case 3:
+                                image.SetValue(Grid.ColumnProperty, 0);
+                                image.SetValue(Grid.RowProperty, 1);
+                                break;
+                            case 4:
+                                image.SetValue(Grid.ColumnProperty, 1);
+                                image.SetValue(Grid.RowProperty, 1);
+                                break;
+                            case 5:
+                                image.SetValue(Grid.ColumnProperty, 0);
+                                image.SetValue(Grid.RowProperty, 2);
+                                break;
+                            case 6:
+                                image.SetValue(Grid.ColumnProperty, 1);
+                                image.SetValue(Grid.RowProperty, 2);
+                                break;
+                        }
+                        containerCounter++; 
+
+                        containerGrid.Children.Add(image);
+                    }
+
+                   
+
+                    sc.Content = containerGrid;
+                }
+            }
         }
     }
 }

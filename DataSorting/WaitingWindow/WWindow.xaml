@@ -1,0 +1,23 @@
+﻿<Window x:Class="DataSorting.WaitingWindow.WWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DataSorting.WaitingWindow"
+        mc:Ignorable="d"
+        Title="WWindow" Height="60" Width="100"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        AllowsTransparency="True">
+    <Border CornerRadius="10">
+        <Border.Background>
+            <SolidColorBrush Color="Gray" Opacity="0.9"/>
+        </Border.Background>
+   
+    <Grid>
+        
+        <Label Content="صبر کنید"  Foreground="White"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+    </Grid>
+    </Border>
+</Window>

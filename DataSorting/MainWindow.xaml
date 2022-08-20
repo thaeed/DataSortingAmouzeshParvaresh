@@ -5,9 +5,101 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataSorting"
         mc:Ignorable="d"
-        Loaded="Window_Loaded"
+        Loaded="Window_Loaded" WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Content="btn" Click="Button_Click" Width="100" Height="100"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Menu>
+            <MenuItem Header="تنظیمات">
+                <MenuItem Header="همگام سازی داده" Name="btnAddData" Click="btnAddData_Click"/>
+                <MenuItem Header="بروزرسانی دیتابیس" Name="btnSyncFiles" Click="btnSyncFiles_Click"/>
+                <Separator/>
+                <MenuItem Header="درباره ؟ "/>
+            </MenuItem>
+        </Menu>
+
+        <Grid Grid.Row="1" Background="Gray" MinHeight="200" >
+
+            <GroupBox Header="اطلاعات کاربری"  FlowDirection="RightToLeft" Margin="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <DataGrid Name="searchDG"
+                          AutoGenerateColumns="False" 
+                          CanUserAddRows="False">
+
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn Header="نام" Width="*" Binding="{Binding Firstname,Mode=TwoWay}">
+                                <DataGridTextColumn.EditingElementStyle>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <EventSetter Event="TextChanged" Handler="FirstnameChanged" />
+                                    </Style>
+                                </DataGridTextColumn.EditingElementStyle>
+                            </DataGridTextColumn>
+
+                            <DataGridTextColumn Header="نام خانوادگی" Width="*" Binding="{Binding Lastname,Mode=TwoWay}">
+                                <DataGridTextColumn.EditingElementStyle>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <EventSetter Event="TextChanged" Handler="LastnameChanged" />
+                                    </Style>
+                                </DataGridTextColumn.EditingElementStyle>
+                            </DataGridTextColumn>
+
+                            <DataGridTextColumn Header="نام پدر" Width="*" Binding="{Binding Fathername,Mode=TwoWay}">
+                                <DataGridTextColumn.EditingElementStyle>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <EventSetter Event="TextChanged" Handler="FathernameChanged" />
+                                    </Style>
+                                </DataGridTextColumn.EditingElementStyle>
+                            </DataGridTextColumn>
+
+                            <DataGridTextColumn Header="کد ملی" Width="*" Binding="{Binding MeliCode,Mode=TwoWay}">
+                                <DataGridTextColumn.EditingElementStyle>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <EventSetter Event="TextChanged" Handler="MeliCodeChanged" />
+                                    </Style>
+                                </DataGridTextColumn.EditingElementStyle>
+                            </DataGridTextColumn>
+                            
+                            <DataGridTextColumn Header="کد پرسنلی" Width="*" Binding="{Binding PersonalCode,Mode=TwoWay}">
+                                <DataGridTextColumn.EditingElementStyle>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <EventSetter Event="TextChanged" Handler="PersonalCodeChanged" />
+                                    </Style>
+                                </DataGridTextColumn.EditingElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+
+
+                    </DataGrid>
+
+                    <DataGrid Name="databaseDG" Grid.Row="1" CanUserAddRows="False" IsReadOnly="True"  AutoGenerateColumns="False"  >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="نام" Width="*" Binding="{Binding Firstname}"/>
+                            <DataGridTextColumn Header="نام خانوادگی" Width="*" Binding="{Binding Lastname}"/>
+                            <DataGridTextColumn Header="نام پدر" Width="*" Binding="{Binding Fathername}"/>
+                            <DataGridTextColumn Header="کد ملی" Width="*" Binding="{Binding MeliCode}"/>
+                            <DataGridTextColumn Header="کد پرسنلی" Width="*" Binding="{Binding PersonalCode}"/>
+                            <DataGridTextColumn Header="تعداد فایل" Width="*" Binding="{Binding FileCount}"/>
+                            <DataGridTextColumn Header="تاریخ ساخت" Width="*" Binding="{Binding Created}"/>
+                            <DataGridTextColumn Header="تاریخ ویرایش" Width="*" Binding="{Binding Updated}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </GroupBox>
+
+
+
+
+        </Grid>
+        <GridSplitter ResizeDirection="Rows" Grid.Row="1" Height="10" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0"/>
     </Grid>
 </Window>

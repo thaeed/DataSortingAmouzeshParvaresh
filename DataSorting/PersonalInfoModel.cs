@@ -17,7 +17,7 @@ namespace DataSorting
         public string? Lastname { get; set; }
         public string? Fathername { get; set; }
         public string? MeliCode { get; set; }
-        public int PersonalCode { get; set; }
+        public string? PersonalCode { get; set; }
         public string? DirPath { get; set; }
         public int FileCount { get; set; }
         public DateTime? Created { get; set; }

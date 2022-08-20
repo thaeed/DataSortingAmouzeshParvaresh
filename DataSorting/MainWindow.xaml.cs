@@ -44,20 +44,28 @@ namespace DataSorting
                 var line = reader.ReadLine();
                 var values = line.Split(',');
 
+                if (values[0] == "firstname")
+                    continue;
+
                 var personal = new PersonalInfoModel()
                 {
                     Firstname = values[0],
                     Lastname = values[1],
                     Fathername = values[2],
                     MeliCode = values[3],
-                    PersonalCode = Convert.ToInt32(values[4])
+                    PersonalCode = Convert.ToInt32(values[4]),
+                    Created = DateTime.Now
                 };
+
+                list.Add(personal);
             }
+             
 
-
-            foreach (var value in listA)
+            foreach (PersonalInfoModel? value in list)
             {
-                MessageBox.Show(value.ToString());
+                
+                _dbContext.Add(value);
+                _dbContext.SaveChanges();
             }
 
         }

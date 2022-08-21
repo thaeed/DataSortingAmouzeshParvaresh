@@ -23,7 +23,7 @@
             <Separator Margin="0 5"/>
 
             <StackPanel>
-                <ProgressBar Name="pBar" Height="15" Margin="5 0"/>
+                <ProgressBar FlowDirection="LeftToRight" Name="pBar" Height="15" Margin="5 0"/>
                 <Button Name="btnUpdate" Click="btnUpdate_Click"  Content="آپدیت" Width="100" Margin="0 5 0 0"/>
             </StackPanel>
 

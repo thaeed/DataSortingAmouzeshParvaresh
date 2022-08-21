@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -37,7 +38,7 @@ namespace DataSorting
         {
             searchDG.KeyDown += SearchDG_KeyDown;
             this.KeyDown += SearchDG_KeyDown;
-         
+
             _dbContext.Database.EnsureCreated();
 
             var dump = new List<PersonalInfoModel>();
@@ -51,20 +52,29 @@ namespace DataSorting
             WaitBox.Close(this);
         }
 
-        private void SearchDG_KeyDown(object sender, KeyEventArgs e)
+        private async void SearchDG_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Insert)
             {
+                imageGrid.Children.Clear();
                 searchDG.DataContext = null;
                 var dump = new List<PersonalInfoModel>();
 
                 dump.Add(new PersonalInfoModel());
                 searchDG.ItemsSource = dump;
+
                 searchDG.CurrentCell = new DataGridCellInfo(
                 searchDG.Items[0], searchDG.Columns[0]);
                 searchDG.BeginEdit();
 
                 searchModel = new PersonalInfoModel();
+
+                txtPath.Text = string.Empty;
+
+                WaitBox.Show(this);
+                var dbResult = await _dbContext.Employees.ToListAsync();
+                databaseDG.ItemsSource = dbResult;
+                WaitBox.Close(this);
             }
         }
 
@@ -117,27 +127,46 @@ namespace DataSorting
         }
 
 
-        private void btnSyncFiles_Click(object sender, RoutedEventArgs e)
+        private async void btnSyncFiles_Click(object sender, RoutedEventArgs e)
         {
             FindingFilesWindow findingFilesWindow = new();
 
             findingFilesWindow.ShowDialog();
 
-            Window_Loaded(null, null);
+            var dump = new List<PersonalInfoModel>();
+
+            dump.Add(new PersonalInfoModel());
+            searchDG.ItemsSource = dump;
+
+            WaitBox.Show(this);
+            var dbResult = await _dbContext.Employees.ToListAsync();
+            databaseDG.ItemsSource = dbResult;
+            WaitBox.Close(this);
         }
 
-        private void btnAddData_Click(object sender, RoutedEventArgs e)
+        private async void btnAddData_Click(object sender, RoutedEventArgs e)
         {
             AddDataWindow addDataWindow = new();
 
             addDataWindow.ShowDialog();
 
-            Window_Loaded(null, null);
+            var dump = new List<PersonalInfoModel>();
+
+            dump.Add(new PersonalInfoModel());
+            searchDG.ItemsSource = dump;
+
+            WaitBox.Show(this);
+            var dbResult = await _dbContext.Employees.ToListAsync();
+            databaseDG.ItemsSource = dbResult;
+            WaitBox.Close(this);
         }
 
         private void databaseDG_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             imageGrid.Children.Clear();
+            txtPath.Text = string.Empty;
+            if (((PersonalInfoModel)databaseDG.SelectedItem) == null)
+                return;
 
             /*
              * Image container has 2 column and 3 rows.. (6 pictures)
@@ -169,13 +198,17 @@ namespace DataSorting
             int containerCounter = 1;
 
             imageGrid.Children.Add(sc);
-            if (((PersonalInfoModel)databaseDG.SelectedItem) == null)
-                return;
+
 
             var info = (PersonalInfoModel)databaseDG.SelectedItem as PersonalInfoModel;
+            txtPath.Text = info.DirPath;
+
+
 
             if (info != null)
             {
+                if (!Directory.Exists(info.DirPath))
+                    return;
                 var files = Directory.GetFiles(info.DirPath);
 
                 if (files.Length > 0)
@@ -185,9 +218,43 @@ namespace DataSorting
                     {
 
                         var image = new Image();
-                        
+
                         image.Stretch = Stretch.Uniform;
                         image.Source = new BitmapImage(new Uri(file));
+
+                        image.MouseDown += delegate
+                        {
+                            Window win = new Window();
+                            win.Height = 500;
+                            win.Width = 500;
+                            win.WindowStartupLocation = WindowStartupLocation.CenterScreen; 
+
+                            Grid winGrid = new Grid();
+                            winGrid.VerticalAlignment = VerticalAlignment.Center;
+                            winGrid.HorizontalAlignment = HorizontalAlignment.Center;
+
+                            RowDefinition winGridRow = new RowDefinition();
+                            winGridRow.Height = new GridLength(100, GridUnitType.Star);
+
+                            winGrid.RowDefinitions.Add(winGridRow);
+
+                            Image winImage = new Image();
+                            winImage.Source = new BitmapImage(new Uri(file));
+                            winImage.Stretch = Stretch.Fill;
+                        
+
+                            winGrid.Children.Add(winImage);
+
+
+                            win.Content = winGrid;
+
+                            win.Title = info.Firstname + " " + info.Lastname + " " + info.PersonalCode;
+                            win.ShowDialog();
+
+
+
+                           
+                        };
 
                         switch (containerCounter)
                         {
@@ -217,15 +284,55 @@ namespace DataSorting
                                 image.SetValue(Grid.RowProperty, 2);
                                 break;
                         }
-                        containerCounter++; 
+                        containerCounter++;
 
                         containerGrid.Children.Add(image);
                     }
 
-                   
+
 
                     sc.Content = containerGrid;
                 }
+            }
+        }
+
+
+
+        private void btnOpenFolder_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtPath.Text))
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    Arguments = txtPath.Text,
+                    FileName = "explorer.exe"
+                };
+
+                Process.Start(startInfo);
+            }
+        }
+
+        private async void txtPath_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtPath.Text))
+            {
+                Clipboard.SetText(txtPath.Text);
+
+                Label lbl = new()
+                {
+                    Foreground = Brushes.PaleVioletRed,
+                    FlowDirection = FlowDirection.RightToLeft,
+                    HorizontalAlignment = HorizontalAlignment.Center
+                };
+
+                lbl.Content = "آدرس کپی شد.";
+
+                copyInfoPanel.Children.Add(lbl);
+
+
+                await Task.Delay(1000);
+                copyInfoPanel.Children.Remove(lbl);
+
             }
         }
     }

@@ -45,6 +45,8 @@ namespace DataSorting
 
         private async void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
+            int duplicateCount = 0;
+            int successCount = 0;
             try
             {
                 if (string.IsNullOrEmpty(txtPath.Text))
@@ -89,11 +91,14 @@ namespace DataSorting
                     {
                         _dbContext.Add(value);
                        await _dbContext.SaveChangesAsync();
-                    }catch(SqliteException ex)
+                        successCount++; 
+                    }catch(SqliteException)
                     {
-                        MessageBox.Show(ex.Message);
+                       duplicateCount++; 
                     }
                 }
+
+                MessageBox.Show($"تعداد موفق: {successCount}\nایراد یا تکراری: {duplicateCount}");
 
                 this.Close();
 

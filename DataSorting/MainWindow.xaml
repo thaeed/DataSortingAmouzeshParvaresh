@@ -16,8 +16,8 @@
 
         <Menu>
             <MenuItem Header="تنظیمات">
-                <MenuItem Header="همگام سازی داده" Name="btnAddData" Click="btnAddData_Click"/>
-                <MenuItem Header="بروزرسانی دیتابیس" Name="btnSyncFiles" Click="btnSyncFiles_Click"/>
+                <MenuItem Header="بارگذاری لیست داده" Name="btnAddData" Click="btnAddData_Click"/>
+                <MenuItem Header="بررسی تصاویر" Name="btnSyncFiles" Click="btnSyncFiles_Click"/>
                 <Separator/>
                 <MenuItem Header="درباره ؟ " ToolTip="سعید دارندی - تابستان 1401 - @thaeed on socials"/>
             </MenuItem>
@@ -68,7 +68,7 @@
                                     </Style>
                                 </DataGridTextColumn.EditingElementStyle>
                             </DataGridTextColumn>
-                            
+
                             <DataGridTextColumn Header="کد پرسنلی" Width="*" Binding="{Binding PersonalCode,Mode=TwoWay}">
                                 <DataGridTextColumn.EditingElementStyle>
                                     <Style TargetType="{x:Type TextBox}">
@@ -104,8 +104,28 @@
 
         </Grid>
         <GridSplitter ResizeDirection="Rows" Grid.Row="1" Height="10" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0"/>
-        <Grid Grid.Row="2" Background="LightGray" Name="imageGrid" Margin="5">
-            
+        <Grid Grid.Row="2" Background="LightGray"  Margin="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel FlowDirection="RightToLeft" HorizontalAlignment="Center" Name="copyInfoPanel" >
+                    <Label >برای کپی کردن آدرس، روی آن دوبار کلیک کنید.</Label>
+                   
+                </StackPanel>
+                
+                <StackPanel Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" HorizontalAlignment="Center" Margin="5">
+                    <TextBox Name="txtPath" FlowDirection="LeftToRight"  IsReadOnly="True" VerticalContentAlignment="Center" MouseDoubleClick="txtPath_MouseDoubleClick" Width="250" ToolTip="برای کپی کردن کلیک کنید."/>
+                    <Button Name="btnOpenFolder" Click="btnOpenFolder_Click" Content="رفتن به پوشه" Height="30" Padding="10 0" Margin="5 0"/>
+                </StackPanel>
+
+                <Grid Grid.Row="2" Name="imageGrid">
+
+                </Grid>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataSorting"
         mc:Ignorable="d"
+        Closing="Window_Closing" WindowStyle="ToolWindow"
         Title="FindingFilesWindow" Height="250" Width="450">
     <Grid FlowDirection="RightToLeft" VerticalAlignment="Center">
         <StackPanel>

@@ -1,5 +1,6 @@
 ﻿using DataSorting.WaitingWindow;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -84,7 +85,7 @@ namespace DataSorting
         private async void FirstnameChanged(object sender, TextChangedEventArgs e)
         {
             TextBox tb = sender as TextBox;
-            searchModel.Firstname = tb.Text;
+            searchModel.Firstname = tb.Text.Replace("ی", "ي");
             var result = await _dbContext.Employees.Where(e => e.Firstname.Contains(searchModel.Firstname) || e.Lastname.Contains(searchModel.Lastname)
                   || e.Fathername.Contains(searchModel.Fathername) || e.MeliCode.StartsWith(searchModel.MeliCode) || e.PersonalCode.StartsWith(searchModel.PersonalCode)).ToListAsync();
             databaseDG.ItemsSource = result;
@@ -93,7 +94,7 @@ namespace DataSorting
         private async void LastnameChanged(object sender, TextChangedEventArgs e)
         {
             TextBox tb = sender as TextBox;
-            searchModel.Lastname = tb.Text;
+            searchModel.Lastname = tb.Text.Replace("ی", "ي");
             var result = await _dbContext.Employees.Where(e => e.Firstname.Contains(searchModel.Firstname) || e.Lastname.Contains(searchModel.Lastname)
                      || e.Fathername.Contains(searchModel.Fathername) || e.MeliCode.StartsWith(searchModel.MeliCode) || e.PersonalCode.StartsWith(searchModel.PersonalCode)).ToListAsync();
             databaseDG.ItemsSource = result;
@@ -102,7 +103,7 @@ namespace DataSorting
         private async void FathernameChanged(object sender, TextChangedEventArgs e)
         {
             TextBox tb = sender as TextBox;
-            searchModel.Fathername = tb.Text;
+            searchModel.Fathername = tb.Text.Replace("ی", "ي");
             var result = await _dbContext.Employees.Where(e => e.Firstname.Contains(searchModel.Firstname) || e.Lastname.Contains(searchModel.Lastname)
                    || e.Fathername.Contains(searchModel.Fathername) || e.MeliCode.StartsWith(searchModel.MeliCode) || e.PersonalCode.StartsWith(searchModel.PersonalCode)).ToListAsync();
             databaseDG.ItemsSource = result;
@@ -111,7 +112,7 @@ namespace DataSorting
         private async void MeliCodeChanged(object sender, TextChangedEventArgs e)
         {
             TextBox tb = sender as TextBox;
-            searchModel.Firstname = tb.Text;
+            searchModel.Firstname = tb.Text.Replace("ی", "ي");
             var result = await _dbContext.Employees.Where(e => e.Firstname.Contains(searchModel.Firstname) || e.Lastname.Contains(searchModel.Lastname)
                     || e.Fathername.Contains(searchModel.Fathername) || e.MeliCode.StartsWith(searchModel.MeliCode) || e.PersonalCode.StartsWith(searchModel.PersonalCode)).ToListAsync();
             databaseDG.ItemsSource = result;
@@ -120,7 +121,7 @@ namespace DataSorting
         private async void PersonalCodeChanged(object sender, TextChangedEventArgs e)
         {
             TextBox tb = sender as TextBox;
-            searchModel.PersonalCode = tb.Text;
+            searchModel.PersonalCode = tb.Text.Replace("ی", "ي");
             var result = await _dbContext.Employees.Where(e => e.Firstname.Contains(searchModel.Firstname) || e.Lastname.Contains(searchModel.Lastname)
                      || e.Fathername.Contains(searchModel.Fathername) || e.MeliCode.StartsWith(searchModel.MeliCode) || e.PersonalCode.StartsWith(searchModel.PersonalCode)).ToListAsync();
             databaseDG.ItemsSource = result;
@@ -129,7 +130,10 @@ namespace DataSorting
 
         private async void btnSyncFiles_Click(object sender, RoutedEventArgs e)
         {
-            FindingFilesWindow findingFilesWindow = new();
+            FindingFilesWindow findingFilesWindow = new()
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
 
             findingFilesWindow.ShowDialog();
 
@@ -146,7 +150,10 @@ namespace DataSorting
 
         private async void btnAddData_Click(object sender, RoutedEventArgs e)
         {
-            AddDataWindow addDataWindow = new();
+            AddDataWindow addDataWindow = new()
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
 
             addDataWindow.ShowDialog();
 
@@ -216,86 +223,89 @@ namespace DataSorting
 
                     foreach (var file in files)
                     {
-
-                        var image = new Image();
-
-                        image.Stretch = Stretch.Uniform;
-                        image.Source = new BitmapImage(new Uri(file));
-
-                        image.MouseDown += delegate
+                        try
                         {
-                            Window win = new Window();
-                            win.Height = 500;
-                            win.Width = 500;
-                            win.WindowStartupLocation = WindowStartupLocation.CenterScreen; 
+                            var image = new Image();
 
-                            Grid winGrid = new Grid();
-                            winGrid.VerticalAlignment = VerticalAlignment.Center;
-                            winGrid.HorizontalAlignment = HorizontalAlignment.Center;
+                            image.Stretch = Stretch.Uniform;
+                            image.Source = new BitmapImage(new Uri(file));
 
-                            RowDefinition winGridRow = new RowDefinition();
-                            winGridRow.Height = new GridLength(100, GridUnitType.Star);
+                            image.MouseDown += delegate
+                            {
+                                Window win = new Window();
+                                win.Height = 500;
+                                win.Width = 500;
+                                win.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-                            winGrid.RowDefinitions.Add(winGridRow);
+                                Grid winGrid = new Grid();
+                                winGrid.VerticalAlignment = VerticalAlignment.Center;
+                                winGrid.HorizontalAlignment = HorizontalAlignment.Center;
 
-                            Image winImage = new Image();
-                            winImage.Source = new BitmapImage(new Uri(file));
-                            winImage.Stretch = Stretch.Fill;
-                        
+                                RowDefinition winGridRow = new RowDefinition();
+                                winGridRow.Height = new GridLength(100, GridUnitType.Star);
 
-                            winGrid.Children.Add(winImage);
+                                winGrid.RowDefinitions.Add(winGridRow);
 
-
-                            win.Content = winGrid;
-
-                            win.Title = info.Firstname + " " + info.Lastname + " " + info.PersonalCode;
-                            win.ShowDialog();
+                                Image winImage = new Image();
+                                winImage.Source = new BitmapImage(new Uri(file));
+                                winImage.Stretch = Stretch.Fill;
 
 
+                                winGrid.Children.Add(winImage);
 
-                           
-                        };
 
-                        switch (containerCounter)
-                        {
-                            case 1:
-                                image.SetValue(Grid.ColumnProperty, 0);
-                                image.SetValue(Grid.RowProperty, 0);
+                                win.Content = winGrid;
 
-                                break;
-                            case 2:
-                                image.SetValue(Grid.ColumnProperty, 1);
-                                image.SetValue(Grid.RowProperty, 0);
-                                break;
-                            case 3:
-                                image.SetValue(Grid.ColumnProperty, 0);
-                                image.SetValue(Grid.RowProperty, 1);
-                                break;
-                            case 4:
-                                image.SetValue(Grid.ColumnProperty, 1);
-                                image.SetValue(Grid.RowProperty, 1);
-                                break;
-                            case 5:
-                                image.SetValue(Grid.ColumnProperty, 0);
-                                image.SetValue(Grid.RowProperty, 2);
-                                break;
-                            case 6:
-                                image.SetValue(Grid.ColumnProperty, 1);
-                                image.SetValue(Grid.RowProperty, 2);
-                                break;
+                                win.Title = info.Firstname + " " + info.Lastname + " " + info.PersonalCode;
+                                win.ShowDialog();
+
+
+
+
+                            };
+
+                            switch (containerCounter)
+                            {
+                                case 1:
+                                    image.SetValue(Grid.ColumnProperty, 0);
+                                    image.SetValue(Grid.RowProperty, 0);
+
+                                    break;
+                                case 2:
+                                    image.SetValue(Grid.ColumnProperty, 1);
+                                    image.SetValue(Grid.RowProperty, 0);
+                                    break;
+                                case 3:
+                                    image.SetValue(Grid.ColumnProperty, 0);
+                                    image.SetValue(Grid.RowProperty, 1);
+                                    break;
+                                case 4:
+                                    image.SetValue(Grid.ColumnProperty, 1);
+                                    image.SetValue(Grid.RowProperty, 1);
+                                    break;
+                                case 5:
+                                    image.SetValue(Grid.ColumnProperty, 0);
+                                    image.SetValue(Grid.RowProperty, 2);
+                                    break;
+                                case 6:
+                                    image.SetValue(Grid.ColumnProperty, 1);
+                                    image.SetValue(Grid.RowProperty, 2);
+                                    break;
+                            }
+                            containerCounter++;
+
+                            containerGrid.Children.Add(image);
+
+
+
+
+                            sc.Content = containerGrid;
                         }
-                        containerCounter++;
-
-                        containerGrid.Children.Add(image);
+                        catch { }
                     }
-
-
-
-                    sc.Content = containerGrid;
                 }
             }
         }
-
 
 
         private void btnOpenFolder_Click(object sender, RoutedEventArgs e)
@@ -334,6 +344,67 @@ namespace DataSorting
                 copyInfoPanel.Children.Remove(lbl);
 
             }
+        }
+
+        private async void btnIncomplete_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var fileDialog = new SaveFileDialog
+                {
+                    Filter = "CSV file |*.csv",
+                    Title = "ذخیره اطلاعات نواقص",
+                    AddExtension = true,
+                    DefaultExt = "csv"
+                };
+                var fileResult = fileDialog.ShowDialog();
+
+                if (fileResult == false)
+                    return;
+
+
+
+
+                var incompletes = await _dbContext.Employees.Where(e => e.FileCount == 0).OrderBy(p => p.Lastname).ToListAsync();
+
+
+                if (incompletes.Count == 0)
+                {
+                    MessageBox.Show("نواقصی موجود نمیباشد.");
+                    return;
+                }
+
+                var write = new StreamWriter(fileDialog.FileName, false, Encoding.UTF8);
+
+
+                var exportStringHeader = string.Format("{0},{1},{2},{3},{4}"
+                    , "نام", "نام خانوادگی", "نام پدر", "کد ملی", "کد پرسنلی");
+                await write.WriteLineAsync(exportStringHeader);
+                await write.FlushAsync();
+
+                foreach (var incomplete in incompletes)
+                {
+                    var exportStringLine = string.Format("{0},{1},{2},{3},{4}",
+                        incomplete.Firstname,
+                        incomplete.Lastname,
+                        incomplete.Fathername,
+                        incomplete.MeliCode,
+                        incomplete.PersonalCode);
+
+                    await write.WriteLineAsync(exportStringLine);
+                    await write.FlushAsync();
+                }
+
+                write.Close();
+
+                MessageBox.Show("اطلاعات با موفقیت ذخیره شد.");
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
         }
     }
 }

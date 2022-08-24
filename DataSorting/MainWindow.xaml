@@ -10,7 +10,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="200"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -19,6 +19,8 @@
                 <MenuItem Header="بارگذاری لیست داده" Name="btnAddData" Click="btnAddData_Click"/>
                 <MenuItem Header="بررسی تصاویر" Name="btnSyncFiles" Click="btnSyncFiles_Click"/>
                 <Separator/>
+                <MenuItem Header="ذخیره نواقص" Name="btnIncomplete" Click="btnIncomplete_Click"/>
+
                 <MenuItem Header="درباره ؟ " ToolTip="سعید دارندی - تابستان 1401 - @thaeed on socials"/>
             </MenuItem>
         </Menu>
@@ -82,6 +84,8 @@
                     </DataGrid>
 
                     <DataGrid Name="databaseDG" Grid.Row="1" 
+                            VerticalScrollBarVisibility="Visible"
+                              HorizontalScrollBarVisibility="Visible"
                               CanUserAddRows="False" IsReadOnly="True"  
                               AutoGenerateColumns="False"
                               SelectionChanged="databaseDG_SelectionChanged">

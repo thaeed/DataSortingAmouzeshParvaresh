@@ -33,9 +33,9 @@ namespace DataSorting
         {
             OpenFileDialog openFileDialog = new();
             openFileDialog.ValidateNames = true;
-            openFileDialog.Filter = "csv files (*.csv)|*.csv;" ;
+            openFileDialog.Filter = "csv files (*.csv)|*.csv;";
 
-           
+
             var result = openFileDialog.ShowDialog();
             if (result ?? false)
             {
@@ -59,25 +59,29 @@ namespace DataSorting
                 var reader = new StreamReader(txtPath.Text);
 
                 WaitBox.Show(this);
-                while (!reader.EndOfStream)
+                await Task.Run(() =>
                 {
-                    var line = reader.ReadLine();
-                    var values = line.Split(',');
-
-                    if (values[0] == "firstname")
-                        continue;
-
-                    var personal = new PersonalInfoModel()
+                    while (!reader.EndOfStream)
                     {
-                        Firstname = values[0],
-                        Lastname = values[1],
-                        Fathername = values[2],
-                        MeliCode = values[3],
-                        PersonalCode = values[4]
-                    };
+                        var line = reader.ReadLine();
+                        var values = line.Split(',');
 
-                    list.Add(personal);
-                }
+                        if (values[0] == "firstname")
+                            continue;
+
+                        var personal = new PersonalInfoModel()
+                        {
+                            Firstname = values[0],
+                            Lastname = values[1],
+                            Fathername = values[2],
+                            MeliCode = values[3],
+                            PersonalCode = values[4]
+                        };
+
+                        list.Add(personal);
+                    }
+                });
+
 
                 WaitBox.Close(this);
 
@@ -86,29 +90,38 @@ namespace DataSorting
 
                 foreach (PersonalInfoModel? value in list)
                 {
+                    await Task.Delay(1);
                     pBar.Value++;
                     try
                     {
                         _dbContext.Add(value);
-                       await _dbContext.SaveChangesAsync();
-                        successCount++; 
-                    }catch(SqliteException)
+                        await _dbContext.SaveChangesAsync();
+                        successCount++;
+                    }
+                    catch (SqliteException)
                     {
-                       duplicateCount++; 
+                        duplicateCount++;
                     }
                 }
 
                 MessageBox.Show($"تعداد موفق: {successCount}\nایراد یا تکراری: {duplicateCount}");
-
+                btnUpdate.IsEnabled = true;
+                btnBrowse.IsEnabled = true;
                 this.Close();
 
             }
-            catch (Exception ex)
+            catch 
             {
                 btnUpdate.IsEnabled = true;
                 btnBrowse.IsEnabled = true;
-                MessageBox.Show(ex.Message);
+             
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!btnBrowse.IsEnabled)
+                e.Cancel = true;
         }
     }
 }

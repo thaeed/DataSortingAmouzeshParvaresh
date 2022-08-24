@@ -63,7 +63,7 @@ namespace DataSorting
                 btnUpdate.IsEnabled = false;
                 foreach (var dir in dirs)
                 {
-                    
+                    await Task.Delay(10);
                     pBar.Value++;
                     var emp = await _dbContex.Employees.Where(e => e.PersonalCode == System.IO.Path.GetFileName(dir)).FirstOrDefaultAsync();
                     
@@ -82,12 +82,13 @@ namespace DataSorting
                 }
 
                 MessageBox.Show("عملیات تمام شد.");
+                btnBrowse.IsEnabled = true;
+                btnUpdate.IsEnabled = true;
 
                 this.DialogResult = true;
                 this.Close();
 
-                btnBrowse.IsEnabled = true;
-                btnUpdate.IsEnabled = true;
+                
 
             }
             catch (Exception ex)
@@ -97,6 +98,12 @@ namespace DataSorting
                 MessageBox.Show(ex.Message);
             }
 
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!btnBrowse.IsEnabled)
+                e.Cancel = true;
         }
     }
 }

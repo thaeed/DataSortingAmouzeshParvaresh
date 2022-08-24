@@ -33,55 +33,38 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <DataGrid Name="searchDG"
-                          AutoGenerateColumns="False" 
-                          CanUserAddRows="False">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                        <DataGrid.Columns>
-
-                            <DataGridTextColumn Header="نام" Width="*" Binding="{Binding Firstname,Mode=TwoWay}">
-                                <DataGridTextColumn.EditingElementStyle>
-                                    <Style TargetType="{x:Type TextBox}">
-                                        <EventSetter Event="TextChanged" Handler="FirstnameChanged" />
-                                    </Style>
-                                </DataGridTextColumn.EditingElementStyle>
-                            </DataGridTextColumn>
-
-                            <DataGridTextColumn Header="نام خانوادگی" Width="*" Binding="{Binding Lastname,Mode=TwoWay}">
-                                <DataGridTextColumn.EditingElementStyle>
-                                    <Style TargetType="{x:Type TextBox}">
-                                        <EventSetter Event="TextChanged" Handler="LastnameChanged" />
-                                    </Style>
-                                </DataGridTextColumn.EditingElementStyle>
-                            </DataGridTextColumn>
-
-                            <DataGridTextColumn Header="نام پدر" Width="*" Binding="{Binding Fathername,Mode=TwoWay}">
-                                <DataGridTextColumn.EditingElementStyle>
-                                    <Style TargetType="{x:Type TextBox}">
-                                        <EventSetter Event="TextChanged" Handler="FathernameChanged" />
-                                    </Style>
-                                </DataGridTextColumn.EditingElementStyle>
-                            </DataGridTextColumn>
-
-                            <DataGridTextColumn Header="کد ملی" Width="*" Binding="{Binding MeliCode,Mode=TwoWay}">
-                                <DataGridTextColumn.EditingElementStyle>
-                                    <Style TargetType="{x:Type TextBox}">
-                                        <EventSetter Event="TextChanged" Handler="MeliCodeChanged" />
-                                    </Style>
-                                </DataGridTextColumn.EditingElementStyle>
-                            </DataGridTextColumn>
-
-                            <DataGridTextColumn Header="کد پرسنلی" Width="*" Binding="{Binding PersonalCode,Mode=TwoWay}">
-                                <DataGridTextColumn.EditingElementStyle>
-                                    <Style TargetType="{x:Type TextBox}">
-                                        <EventSetter Event="TextChanged" Handler="PersonalCodeChanged" />
-                                    </Style>
-                                </DataGridTextColumn.EditingElementStyle>
-                            </DataGridTextColumn>
-                        </DataGrid.Columns>
+                        <StackPanel>
+                            <Label Content="نام:"/>
+                            <TextBox  Height="25" Name="txtFirstname" TextChanged="txtFirstname_TextChanged"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <Label Content="نام خانوادگی:"/>
+                            <TextBox  Height="25" Name="txtLastname" TextChanged="txtLastname_TextChanged"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <Label Content="نام پدر"/>
+                            <TextBox  Height="25" Name="txtFathername" TextChanged="txtFathername_TextChanged"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3">
+                            <Label Content="کد ملی"/>
+                            <TextBox  Height="25" Name="txtMeliCode" TextChanged="txtMeliCode_TextChanged"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <Label Content="کد پرسنلی"/>
+                            <TextBox  Height="25" Name="txtPersonalCode" TextChanged="txtPersonalCode_TextChanged"/>
+                        </StackPanel>
 
 
-                    </DataGrid>
+                    </Grid>
 
                     <DataGrid Name="databaseDG" Grid.Row="1" 
                             VerticalScrollBarVisibility="Visible"

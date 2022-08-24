@@ -28,7 +28,6 @@ namespace DataSorting
     public partial class MainWindow : Window
     {
         private DataDBContext _dbContext = new DataDBContext();
-        private PersonalInfoModel searchModel = new PersonalInfoModel();
 
         public MainWindow()
         {
@@ -37,95 +36,47 @@ namespace DataSorting
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            searchDG.KeyDown += SearchDG_KeyDown;
-            this.KeyDown += SearchDG_KeyDown;
+
+            this.KeyDown += ResetFilterKeyDown;
+
+            txtFirstname.PreviewKeyDown += ResetFilterKeyDown;
+            txtLastname.PreviewKeyDown += ResetFilterKeyDown;
+            txtFathername.PreviewKeyDown += ResetFilterKeyDown;
+            txtMeliCode.PreviewKeyDown += ResetFilterKeyDown;
+            txtPersonalCode.PreviewKeyDown += ResetFilterKeyDown;
 
             _dbContext.Database.EnsureCreated();
 
-            var dump = new List<PersonalInfoModel>();
-
-            dump.Add(new PersonalInfoModel());
-            searchDG.ItemsSource = dump;
 
             WaitBox.Show(this);
-            var dbResult = await _dbContext.Employees.ToListAsync();
+            var dbResult = await _dbContext.Employees.OrderBy(e => e.Lastname).ToListAsync();
             databaseDG.ItemsSource = dbResult;
             WaitBox.Close(this);
         }
 
-        private async void SearchDG_KeyDown(object sender, KeyEventArgs e)
+        private async void ResetFilterKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Insert)
+
+
+            if (e.Key == Key.Delete)
             {
                 imageGrid.Children.Clear();
-                searchDG.DataContext = null;
-                var dump = new List<PersonalInfoModel>();
 
-                dump.Add(new PersonalInfoModel());
-                searchDG.ItemsSource = dump;
+                txtFirstname.Text = txtLastname.Text = txtFathername.Text = txtMeliCode.Text = txtPersonalCode.Text = string.Empty;
 
-                searchDG.CurrentCell = new DataGridCellInfo(
-                searchDG.Items[0], searchDG.Columns[0]);
-                searchDG.BeginEdit();
 
-                searchModel = new PersonalInfoModel();
+                txtFirstname.Focus();
+
 
                 txtPath.Text = string.Empty;
 
                 WaitBox.Show(this);
-                var dbResult = await _dbContext.Employees.ToListAsync();
+                var dbResult = await _dbContext.Employees.OrderBy(e => e.Lastname).ToListAsync();
                 databaseDG.ItemsSource = dbResult;
                 WaitBox.Close(this);
             }
         }
 
-
-
-
-        private async void FirstnameChanged(object sender, TextChangedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
-            searchModel.Firstname = tb.Text.Replace("ی", "ي");
-            var result = await _dbContext.Employees.Where(e => e.Firstname.Contains(searchModel.Firstname) || e.Lastname.Contains(searchModel.Lastname)
-                  || e.Fathername.Contains(searchModel.Fathername) || e.MeliCode.StartsWith(searchModel.MeliCode) || e.PersonalCode.StartsWith(searchModel.PersonalCode)).ToListAsync();
-            databaseDG.ItemsSource = result;
-        }
-
-        private async void LastnameChanged(object sender, TextChangedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
-            searchModel.Lastname = tb.Text.Replace("ی", "ي");
-            var result = await _dbContext.Employees.Where(e => e.Firstname.Contains(searchModel.Firstname) || e.Lastname.Contains(searchModel.Lastname)
-                     || e.Fathername.Contains(searchModel.Fathername) || e.MeliCode.StartsWith(searchModel.MeliCode) || e.PersonalCode.StartsWith(searchModel.PersonalCode)).ToListAsync();
-            databaseDG.ItemsSource = result;
-        }
-
-        private async void FathernameChanged(object sender, TextChangedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
-            searchModel.Fathername = tb.Text.Replace("ی", "ي");
-            var result = await _dbContext.Employees.Where(e => e.Firstname.Contains(searchModel.Firstname) || e.Lastname.Contains(searchModel.Lastname)
-                   || e.Fathername.Contains(searchModel.Fathername) || e.MeliCode.StartsWith(searchModel.MeliCode) || e.PersonalCode.StartsWith(searchModel.PersonalCode)).ToListAsync();
-            databaseDG.ItemsSource = result;
-        }
-
-        private async void MeliCodeChanged(object sender, TextChangedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
-            searchModel.Firstname = tb.Text.Replace("ی", "ي");
-            var result = await _dbContext.Employees.Where(e => e.Firstname.Contains(searchModel.Firstname) || e.Lastname.Contains(searchModel.Lastname)
-                    || e.Fathername.Contains(searchModel.Fathername) || e.MeliCode.StartsWith(searchModel.MeliCode) || e.PersonalCode.StartsWith(searchModel.PersonalCode)).ToListAsync();
-            databaseDG.ItemsSource = result;
-        }
-
-        private async void PersonalCodeChanged(object sender, TextChangedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
-            searchModel.PersonalCode = tb.Text.Replace("ی", "ي");
-            var result = await _dbContext.Employees.Where(e => e.Firstname.Contains(searchModel.Firstname) || e.Lastname.Contains(searchModel.Lastname)
-                     || e.Fathername.Contains(searchModel.Fathername) || e.MeliCode.StartsWith(searchModel.MeliCode) || e.PersonalCode.StartsWith(searchModel.PersonalCode)).ToListAsync();
-            databaseDG.ItemsSource = result;
-        }
 
 
         private async void btnSyncFiles_Click(object sender, RoutedEventArgs e)
@@ -137,13 +88,10 @@ namespace DataSorting
 
             findingFilesWindow.ShowDialog();
 
-            var dump = new List<PersonalInfoModel>();
 
-            dump.Add(new PersonalInfoModel());
-            searchDG.ItemsSource = dump;
 
             WaitBox.Show(this);
-            var dbResult = await _dbContext.Employees.ToListAsync();
+            var dbResult = await _dbContext.Employees.OrderBy(e => e.Lastname).ToListAsync();
             databaseDG.ItemsSource = dbResult;
             WaitBox.Close(this);
         }
@@ -157,13 +105,10 @@ namespace DataSorting
 
             addDataWindow.ShowDialog();
 
-            var dump = new List<PersonalInfoModel>();
 
-            dump.Add(new PersonalInfoModel());
-            searchDG.ItemsSource = dump;
 
             WaitBox.Show(this);
-            var dbResult = await _dbContext.Employees.ToListAsync();
+            var dbResult = await _dbContext.Employees.OrderBy(e => e.Lastname).ToListAsync();
             databaseDG.ItemsSource = dbResult;
             WaitBox.Close(this);
         }
@@ -405,6 +350,105 @@ namespace DataSorting
                 MessageBox.Show(ex.Message);
             }
 
+        }
+
+        private async void txtFirstname_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var firstname = txtFirstname.Text.Replace("ی", "ي");
+            var lastname = txtLastname.Text.Replace("ی", "ي");
+            var fathername = txtFathername.Text.Replace("ی", "ي");
+
+            var result = await _dbContext.Employees.Where(e => e.Firstname.StartsWith(firstname))
+                .Where(e => e.Lastname.StartsWith(lastname))
+                .Where(e => e.Fathername.StartsWith(fathername))
+                .Where(e => e.MeliCode.StartsWith(txtMeliCode.Text))
+                .Where(e => e.PersonalCode.StartsWith(txtPersonalCode.Text))
+                .OrderBy(e => e.Firstname)
+                .ToListAsync();
+
+
+
+            databaseDG.ItemsSource = result;
+        }
+
+        private async void txtLastname_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var firstname = txtFirstname.Text.Replace("ی", "ي");
+            var lastname = txtLastname.Text.Replace("ی", "ي");
+            var fathername = txtFathername.Text.Replace("ی", "ي");
+
+            var result = await _dbContext.Employees.Where(e => e.Lastname.StartsWith(lastname))
+                  .Where(e => e.Firstname.StartsWith(firstname))
+                  .Where(e => e.Fathername.StartsWith(fathername))
+                  .Where(e => e.MeliCode.StartsWith(txtMeliCode.Text))
+                  .Where(e => e.PersonalCode.StartsWith(txtPersonalCode.Text))
+                  .OrderBy(e => e.Firstname)
+                  .ToListAsync();
+
+
+
+
+            databaseDG.ItemsSource = result;
+        }
+
+        private async void txtFathername_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var firstname = txtFirstname.Text.Replace("ی", "ي");
+            var lastname = txtLastname.Text.Replace("ی", "ي");
+            var fathername = txtFathername.Text.Replace("ی", "ي");
+
+            var result = await _dbContext.Employees.Where(e => e.Fathername.StartsWith(fathername))
+                  .Where(e => e.Firstname.StartsWith(firstname))
+                  .Where(e => e.Lastname.StartsWith(lastname))
+                  .Where(e => e.MeliCode.StartsWith(txtMeliCode.Text))
+                  .Where(e => e.PersonalCode.StartsWith(txtPersonalCode.Text))
+                  .OrderBy(e => e.Firstname)
+                  .ToListAsync();
+
+
+
+
+            databaseDG.ItemsSource = result;
+        }
+
+        private async void txtMeliCode_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var firstname = txtFirstname.Text.Replace("ی", "ي");
+            var lastname = txtLastname.Text.Replace("ی", "ي");
+            var fathername = txtFathername.Text.Replace("ی", "ي");
+
+            var result = await _dbContext.Employees.Where(e => e.MeliCode.StartsWith(txtMeliCode.Text))
+                  .Where(e => e.Firstname.StartsWith(firstname))
+                  .Where(e => e.Lastname.StartsWith(lastname))
+                  .Where(e => e.Fathername.StartsWith(fathername))
+                  .Where(e => e.PersonalCode.StartsWith(txtPersonalCode.Text))
+                  .OrderBy(e => e.Firstname)
+                  .ToListAsync();
+
+
+
+
+            databaseDG.ItemsSource = result;
+        }
+
+        private async void txtPersonalCode_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var firstname = txtFirstname.Text.Replace("ی", "ي");
+            var lastname = txtLastname.Text.Replace("ی", "ي");
+            var fathername = txtFathername.Text.Replace("ی", "ي");
+
+            var result = await _dbContext.Employees.Where(e => e.PersonalCode.StartsWith(txtPersonalCode.Text))
+                  .Where(e => e.Firstname.StartsWith(firstname))
+                  .Where(e => e.Lastname.StartsWith(lastname))
+                  .Where(e => e.Fathername.StartsWith(fathername))
+                  .Where(e => e.MeliCode.StartsWith(txtMeliCode.Text))
+                  .OrderBy(e => e.Firstname)
+                  .ToListAsync();
+
+
+
+
+            databaseDG.ItemsSource = result;
         }
     }
 }
